@@ -12,13 +12,13 @@ export default function Page() {
     const [filmes, setFilmes] = useState([])
 
     useEffect(() => {
-        apiMovie.get('movie/now_playing').then(resultado => {
+        apiMovie.get('movie/popular').then(resultado => {
             setFilmes(resultado.data.results)
         })
     }, [])
 
     return (
-        <Pagina titulo="Filmes em Cartaz">
+        <Pagina titulo="Filmes Populares">
 
             <Row md={3}>
                 {filmes.map(item => (
@@ -37,7 +37,7 @@ export default function Page() {
                     </Col>
                 ))}
             </Row>
-        
+           
         </Pagina>
     )
 }

@@ -1,71 +1,69 @@
 'use client'
 
 import Pagina from "@/app/components/Pagina";
-import apiMovie from "@/app/services/apiMovies";
 import { useEffect, useState } from "react";
-import { Col, Row, Button } from "react-bootstrap";
-import Link from 'next/link';
+import apiMovie from "@/app/services/apiMovies";
+import { Col, Row } from "react-bootstrap";
+import Link from "next/link";
 
-export default function Page({ params }) {
-    const [filme, setFilme] = useState(null);
-    const [atores, setAtores] = useState([]);
+
+export default function Page({params}) {
+
+    const [filme, setFilme] = useState({})
+    const [atores, setAtores] = useState([])
+
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                const resultado = await apiMovie.get(`movie/${params.id}`);
-                setFilme(resultado.data);
+        apiMovie.get(`movie/${params.id}`).then(resultado => {
+            setFilme(resultado.data)
+        })
+    }, [])
 
-                const atoresResultado = await apiMovie.get(`movie/${params.id}/credits`);
-                setAtores(atoresResultado.data.cast);
-            } catch (error) {
-                console.error('Erro ao buscar os detalhes do filme:', error);
-            }
-        };
+    useEffect(() => {
+        apiMovie.get(`movie/${params.id}/credits`).then(resultado => {
+            setAtores(resultado.data.cast)
+        })
+    }, [])
 
-        fetchDetails();
-    }, [params.id]);
-
-    if (!filme) {
-        return <div>Carregando...</div>;
-    }
 
     return (
-        <Pagina titulo="Detalhes do Filme">
-            <Row className="mt-4">
-                <Col md={4}>
-                    <img src={`https://image.tmdb.org/t/p/w500/${filme.poster_path}`} alt={filme.title} className="img-fluid" />
+        <Pagina titulo={filme.title}>
+        {
+            filme.id &&
+            <Row className="mt-3">
+                <Col sm={4}>
+                    <img className="img-fluid" src={'https://image.tmdb.org/t/p/w500/' + filme.poster_path} />
                 </Col>
-                <Col>
-                    <p><b>Título: </b>{filme.title}</p>
-                    <p><b>Título Original: </b>{filme.original_title}</p>
+                <Col sm={8}>
+                    <p><b>Título original: </b>{filme.original_title}</p>
                     <p><b>Popularidade: </b>{filme.popularity}</p>
                     <p><b>Data de Lançamento: </b>{filme.release_date}</p>
-                    <p><b>Orçamento: </b>{filme.budget ? `$${filme.budget.toLocaleString()}` : 'N/A'}</p>
-                    <p><b>Gêneros: </b>{filme.genres.map(genero => genero.name).join(', ')}</p>
+                    <p><b>Orçamento: </b>{filme.budget}</p>
+                    <p><b>Gêneros: </b>
+                        {filme.genres.map(item => item.name).join(', ')}
+                    </p>
                     <p><b>Sinopse: </b>{filme.overview}</p>
-
-                    <Link href="/" passHref>
-                        <Button variant="primary">Voltar</Button>
-                    </Link>
+                </Col>
+                <Col sm={12}>
+                    <h1>Atores</h1>
+                    <Row>
+                        {atores.map(item => (
+                            <Col
+                                key={item.id}
+                                title={item.name}
+                                className="mb-3"
+                                sm={2}
+                            >
+                                <Link href={`/atores/${item.id}`}>
+                                    <img className="img-fluid" src={'https://image.tmdb.org/t/p/w500/' + item.profile_path} />
+                                </Link>
+                                <p>{item.name}</p>
+                            </Col>
+                        ))}
+                    </Row>
                 </Col>
             </Row>
-
-            <h2>Atores</h2>
-            <Row>
-                {atores.map(ator => (
-                    <Col md={2} key={ator.id} className="my-2">
-                        <Link href={`/atores/${ator.id}`} passHref>
-                            <img
-                                src={ator.profile_path ? `https://image.tmdb.org/t/p/w200/${ator.profile_path}` : '/placeholder.png'}
-                                alt={ator.name}
-                                className="img-fluid"
-                            />
-                        </Link>
-                        <p>{ator.name}</p>
-                    </Col>
-                ))}
-            </Row>
-        </Pagina>
-    );
+        }
+    </Pagina>
+    )
 }

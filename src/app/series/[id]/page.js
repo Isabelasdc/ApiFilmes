@@ -1,98 +1,95 @@
 'use client'
 
 import Pagina from "@/app/components/Pagina";
-import apiMovie from "@/app/services/apiMovies";
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Button } from "react-bootstrap";
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import apiMovie from "@/app/services/apiMovies";
+import { Col, Row } from "react-bootstrap";
+import Link from "next/link";
 
-export default function SeriesDetailPage({ params }) {
-    const [serie, setSerie] = useState(null);
-    const [atores, setAtores] = useState([]);
-    const [temporadas, setTemporadas] = useState([]);
-    const router = useRouter();
+
+export default function Page({params}) {
+
+    const [series, setSeries] = useState({})
+    const [temporadas, setTemporadas] = useState([])
+    const [atores, setAtores] = useState([])
+
 
     useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                // Obtém detalhes da série
-                const resultado = await apiMovie.get(`tv/${params.id}`);
-                setSerie(resultado.data);
+        apiMovie.get(`tv/${params.id}`).then(resultado => {
+            setSeries(resultado.data)
+        })
+    }, [])
 
-                // Obtém atores
-                const atoresResultado = await apiMovie.get(`tv/${params.id}/credits`);
-                setAtores(atoresResultado.data.cast);
+    useEffect(() => {
+        apiMovie.get(`tv/${params.id}`).then(resultado => {
+            setTemporadas(resultado.data.seasons)
+        })
+    }, [])
 
-                // Obtém temporadas
-                setTemporadas(resultado.data.seasons);
-            } catch (error) {
-                console.error('Erro ao buscar os detalhes da série:', error);
-            }
-        };
+    useEffect(() => {
+        apiMovie.get(`tv/${params.id}/credits`).then(resultado => {
+            setAtores(resultado.data.cast)
+        })
+    }, [])
 
-        fetchDetails();
-    }, [params.id]);
-
-    if (!serie) {
-        return <div>Carregando...</div>;
-    }
 
     return (
-        <Pagina titulo="Detalhes da Série">
-            <Row className="mt-4">
-                <Col md={4}>
-                    <img src={`https://image.tmdb.org/t/p/w500/${serie.poster_path}`} alt={serie.name} className="img-fluid" />
+        <Pagina titulo={series.name}>
+        {
+            series.id &&
+            <Row className="mt-3">
+                <Col sm={4}>
+                    <img className="img-fluid" src={'https://image.tmdb.org/t/p/w500/' + series.poster_path} />
                 </Col>
-                <Col md={8}>
-                    <h2>{serie.name}</h2>
-                    <p><b>Título Original: </b>{serie.original_name}</p>
-                    <p><b>Popularidade: </b>{serie.popularity}</p>
-                    <p><b>Data de Lançamento: </b>{serie.first_air_date}</p>
-                    <p><b>Gênero: </b>{serie.genres.map(genero => genero.name).join(', ')}</p>
-                    <p><b>Sinopse: </b>{serie.overview}</p>
-
-                    <Link href="/series" passHref>
-                        <Button variant="primary">Voltar</Button>
-                    </Link>
+                <Col sm={8}>
+                    <p><b>Título original: </b>{series.original_name}</p>
+                    <p><b>Popularidade: </b>{series.popularity}</p>
+                    <p><b>Primeiro episódio ao AR : </b>{series.first_air_date}</p>
+                    <p><b>Nota: </b>{series.vote_average}</p>
+                    <p><b>Gêneros: </b>
+                        {series.genres.map(item => item.name).join(', ')}
+                    </p>
+                    <p><b>Sinopse: </b>{series.overview}</p>
                 </Col>
-            </Row>
+                <Col sm={12} className="mt-3">
+                    <h1>Temporadas</h1>
+                    <Row className="mt-3">
+                        {temporadas.map(item => (
+                            <Col
+                                key={item.id}
+                                title={item.name}
+                                className="mb-3"
+                                sm={2}
+                            >
+                                <Link href={`/tv/${item.id}/season`}>
+                                    <img className="img-fluid" src={'https://image.tmdb.org/t/p/w500/' + item.poster_path} />
+                                </Link>
+                                <p>{item.name}</p>
+                            </Col>
+                        ))}
+                    </Row>
+                </Col>
 
-            <Row className="mt-4">
-                <Col>
-                    <h3>Temporadas:</h3>
+                <Col sm={12}>
+                    <h1>Atores</h1>
                     <Row>
-                        {temporadas.map(temp => (
-                            <Col md={3} key={temp.id} className="my-2">
-                                <Card>
-                                    <Card.Img variant="top" src={`https://image.tmdb.org/t/p/w500/${temp.poster_path}`} />
-                                    <Card.Body>
-                                        <Card.Title>Temporada {temp.season_number}</Card.Title>
-                                    </Card.Body>
-                                </Card>
+                        {atores.map(item => (
+                            <Col
+                                key={item.id}
+                                title={item.name}
+                                className="mb-3"
+                                sm={2}
+                            >
+                                <Link href={`/atores/${item.id}`}>
+                                    <img className="img-fluid" src={'https://image.tmdb.org/t/p/w500/' + item.profile_path} />
+                                </Link>
+                                <p>{item.name}</p>
                             </Col>
                         ))}
                     </Row>
                 </Col>
             </Row>
-
-            <Row className="mt-4">
-                <Col>
-                    <h3>Atores:</h3>
-                    <Row>
-                        {atores.map(ator => (
-                            <Col md={2} key={ator.id} className="my-2">
-                                <img
-                                    src={ator.profile_path ? `https://image.tmdb.org/t/p/w200/${ator.profile_path}` : '/placeholder.png'}
-                                    alt={ator.name}
-                                    className="img-fluid"
-                                />
-                                <p>{ator.name}</p>
-                            </Col>
-                        ))}
-                    </Row>
-                </Col>
-            </Row>
-        </Pagina>
-    );
+        }
+    </Pagina>
+    )
 }

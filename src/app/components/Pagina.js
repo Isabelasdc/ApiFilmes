@@ -8,32 +8,38 @@ export default function Pagina(props) {
                 <Container>
                     <Navbar.Brand href="/">Fundamentos</Navbar.Brand>
                     <Nav className="me-auto">
-                        <Nav.Link href="/fundamentos">Filmes</Nav.Link>
-                        <Nav.Link href="/clientes">Séries</Nav.Link>
-                        <Nav.Link href="/array">Atores</Nav.Link>
-                        <Nav.Link href="/disney">Disney</Nav.Link>
                         <NavDropdown title="Filmes" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="/disney">Lista</NavDropdown.Item> 
-                            <NavDropdown.Item href="/">
+                            <NavDropdown.Item href="/filmes/popular">
                                 Populares
                             </NavDropdown.Item>
                             <NavDropdown.Item href="/filmes">
                                 Em cartaz
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="/disney/tabela">
-                                Tabela
+                            <NavDropdown.Item href="/filmes/toprated">
+                                Melhor Avaliado
+                            </NavDropdown.Item>
+                            <NavDropdown.Item href="/filmes/upcoming">
+                                Em Breve
                             </NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Séries" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="/Serie">Lista</NavDropdown.Item> 
-                            <NavDropdown.Item href="/">
+                            <NavDropdown.Item href="/series">
                                 Populares
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="/series">
-                                Em cartaz
+                            <NavDropdown.Item href="/series/toprated">
+                                Melhor Avaliada
                             </NavDropdown.Item>
-                            <NavDropdown.Item href="/">
-                                Tabela
+                            <NavDropdown.Item href="/series/ontheair">
+                                No Ar
+                            </NavDropdown.Item>
+                            <NavDropdown.Item href="/series/airingtoday">
+                                No Ar Hoje 
+                            </NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="Atores" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/atores">Lista</NavDropdown.Item> 
+                            <NavDropdown.Item href="/atores">
+                                Populares
                             </NavDropdown.Item>
                         </NavDropdown>
                     </Nav>

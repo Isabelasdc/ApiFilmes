@@ -9,27 +9,27 @@ import Link from "next/link";
 
 export default function Page() {
 
-    const [filmes, setFilmes] = useState([])
+    const [series, setSeries] = useState([])
 
     useEffect(() => {
-        apiMovie.get('movie/now_playing').then(resultado => {
-            setFilmes(resultado.data.results)
+        apiMovie.get('tv/on_the_air').then(resultado => {
+            setSeries(resultado.data.results)
         })
     }, [])
 
     return (
-        <Pagina titulo="Filmes em Cartaz">
+        <Pagina titulo="Séries no Ar">
 
             <Row md={3}>
-                {filmes.map(item => (
+                {series.map(item => (
                     <Col key={item.id} className="mt-3">
                         <Card>
-                            <Card.Img height={150} variant="top" src={'https://image.tmdb.org/t/p/w500/' + item.backdrop_path} />
+                            <Card.Img height={200} variant="top" src={'https://image.tmdb.org/t/p/w500/' + item.poster_path} />
                             <Card.Body>
-                                <Card.Title>{item.title}</Card.Title>
-                                <Card.Text>{item.original_title}</Card.Text>
+                                <Card.Title>{item.name}</Card.Title>
+                                <Card.Text>{item.original_name}</Card.Text>
                                 <Card.Text>Popularidade: {item.popularity}</Card.Text>
-                                <Link className="btn btn-danger" href={`/filmes/${item.id}`}>
+                                <Link className="btn btn-danger" href={`/series/${item.id}`}>
                                     Detalhes
                                 </Link>
                             </Card.Body>
@@ -37,7 +37,7 @@ export default function Page() {
                     </Col>
                 ))}
             </Row>
-        
+           
         </Pagina>
     )
 }
