@@ -1,0 +1,5 @@
+{
+  "/filmes/upcoming/page": "app/filmes/upcoming/page.js",
+  "/series/airingtoday/page": "app/series/airingtoday/page.js",
+  "/atores/page": "app/atores/page.js"
+}
