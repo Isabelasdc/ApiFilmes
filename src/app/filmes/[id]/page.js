@@ -28,6 +28,7 @@ export default function Page({params}) {
 
     return (
         <Pagina titulo={filme.title}>
+<<<<<<< HEAD
         {
             filme.id &&
             <Row className="mt-3">
@@ -66,4 +67,41 @@ export default function Page({params}) {
         }
     </Pagina>
     )
+=======
+            <Row className="mt-4">
+                <Col md={4}>
+                    <img src={`https://image.tmdb.org/t/p/w500/${filme.poster_path}`} alt={filme.title} className="img-fluid" />
+                </Col>
+                <Col>
+                    <p><b>Título Original: </b>{filme.original_title}</p>
+                    <p><b>Popularidade: </b>{filme.popularity}</p>
+                    <p><b>Data de Lançamento: </b>{filme.release_date}</p>
+                    <p><b>Orçamento: </b>{filme.budget}</p>
+                    <p><b>Gêneros: </b>{filme.genres.map(genero => genero.name).join(', ')}</p>
+                    <p><b>Sinopse: </b>{filme.overview}</p>
+
+                    <Link href="/" >
+                        <Button variant="primary">Voltar</Button>
+                    </Link>
+                </Col>
+            </Row>
+
+            <h2>Atores</h2>
+            <Row>
+                {atores.map(ator => (
+                    <Col md={2} key={ator.id} className="my-2">
+                        <Link href={`/atores/${ator.id}`}>
+                            <img
+                                src={"https://image.tmdb.org/t/p/w200/"  + ator.profile_path}
+                                alt={ator.name}
+                                className="img-fluid"
+                            />
+                        </Link> 
+                        <p>{ator.name}</p>
+                    </Col>
+                ))}
+            </Row>
+        </Pagina>
+    );
+>>>>>>> 159cea7344e9921ea6aef0eae48eef90688c82bf
 }
